@@ -1,23 +1,20 @@
 import streamlit as st
 import pandas as pd
 import pickle
+import os
 
 st.title("Предсказание цены автомобиля")
 
 @st.cache_resource
 def load_model():
-    with open('model.pickle', 'rb') as f:
+    current_dir = os.path.dirname(__file__)
+    model_path = os.path.join(current_dir, 'model.pickle')
+
+    with open(model_path, 'rb') as f:
         model = pickle.load(f)
     return model
 
-@st.cache_data
-def load_features():
-    with open('model.pickle', 'rb') as f:
-        features = pickle.load(f)
-    return features
-
 model = load_model()
-feature_names = load_features()
 
 input_data = {}
 
@@ -102,4 +99,5 @@ if st.button("Предсказать цену"):
 
     prediction = model.predict(input_df)[0]
     
+
     st.write("Предполагаемая цена:", round(prediction, 2))
